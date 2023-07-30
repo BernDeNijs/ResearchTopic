@@ -11,7 +11,12 @@ using namespace Elite;
 //Destructor
 App_FlowFieldPathFinding::~App_FlowFieldPathFinding()
 {
-	SAFE_DELETE(m_pFlowField);
+	SAFE_DELETE(m_pFlowField)
+	for (auto& agent : m_Agents)
+	{
+		SAFE_DELETE(agent)
+	}
+	m_Agents.clear();
 }
 
 //Functions
@@ -24,10 +29,12 @@ void App_FlowFieldPathFinding::Start()
 	DEBUGRENDERER2D->GetActiveCamera()->SetMoveLocked(true);
 
 	m_pFlowField = new FlowField(false);
-	m_pFlowField->InitializeGrid(16, 16, 8, false, true);
+	m_pFlowField->InitializeGrid(m_Columns, m_Rows, m_CellSize, false, true);
 	m_pFlowField->InitializeBuffer();
 
 	m_GraphRenderer.SetNumberPrintPrecision(0);
+
+	SpawnRandomAgents();
 }
 
 void App_FlowFieldPathFinding::Update(float deltaTime)
@@ -49,6 +56,12 @@ void App_FlowFieldPathFinding::Update(float deltaTime)
 	}
 
 	UpdateUI();
+
+	for (const auto& agent : m_Agents)
+	{
+		agent->TrimToWorld({ 0,0 }, { static_cast<float>(m_WorldWidth), static_cast<float>(m_WorldHeight) }, false);
+		agent->SetLinearVelocity((m_pFlowField->GetDirection(agent->GetPosition())) * agent->GetMaxLinearSpeed());		
+	}
 }
 
 void App_FlowFieldPathFinding::UpdateUI()
@@ -91,7 +104,7 @@ void App_FlowFieldPathFinding::UpdateUI()
 
 	////Get influence map data
 	ImGui::Checkbox("Enable graph editing", &m_EditGraphEnabled);
-	ImGui::Checkbox("Render as graph", &m_RenderAsGraph);
+	ImGui::Checkbox("Render as directions", &m_RenderAsDirections);
 
 	//auto momentum = m_pInfluenceGrid->GetMomentum();
 	//auto decay = m_pInfluenceGrid->GetDecay();
@@ -118,11 +131,19 @@ void App_FlowFieldPathFinding::UpdateUI()
 
 void App_FlowFieldPathFinding::Render(float deltaTime) const
 {
-	m_GraphRenderer.RenderGraph(m_pFlowField, true, true, false, false);
+	if (m_RenderAsDirections)
+	{
+		m_GraphRenderer.RenderGraph(m_pFlowField, true, false, false, false);
+	}
+	else
+	{
+		m_GraphRenderer.RenderGraph(m_pFlowField, true, true, false, false);
+	}
+	
 
 }
 
-void App_FlowFieldPathFinding::EditFieldOnMouseClick(Elite::InputMouseButton mouseBtn)
+void App_FlowFieldPathFinding::EditFieldOnMouseClick(Elite::InputMouseButton mouseBtn) const
 {
 	auto mouseData = INPUTMANAGER->GetMouseData(Elite::InputType::eMouseButton, mouseBtn);
 	auto mousePos = DEBUGRENDERER2D->GetActiveCamera()->ConvertScreenToWorld(Vector2{ (float)mouseData.X, (float)mouseData.Y });
@@ -138,4 +159,26 @@ void App_FlowFieldPathFinding::EditFieldOnMouseClick(Elite::InputMouseButton mou
 	
 	//	m_pInfluenceGraph2D->SetInfluenceAtPosition(mousePos, inf);
 
+}void App_FlowFieldPathFinding::SpawnRandomAgents()
+{
+	//delete old agents
+	for (auto& agent : m_Agents)
+	{
+		SAFE_DELETE(agent)
+	}
+	m_Agents.clear();
+
+	
+
+	Vector2 randomPos{};
+	for (int idx{}; idx < m_NrOfAgents; ++idx)
+	{
+		m_Agents.push_back(new SteeringAgent());
+		randomPos.x = static_cast<float>(rand() % m_WorldWidth);
+		randomPos.y = static_cast<float>(rand() % m_WorldHeight);
+		m_Agents[idx]->SetPosition(randomPos);	
+		m_Agents[idx]->SetMaxLinearSpeed(10.f);
+		m_Agents[idx]->SetAutoOrient(true);
+		m_Agents[idx]->SetMass(0.f);
+	}
 }

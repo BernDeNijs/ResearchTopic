@@ -13,6 +13,7 @@
 #include "framework\EliteAI\EliteGraphs\EliteGraphUtilities\EGraphEditor.h"
 #include "framework\EliteAI\EliteGraphs\EliteGraphUtilities\EGraphRenderer.h"
 #include "projects/Movement/Pathfinding/FlowfieldPathfinding/FlowField/FlowField.h"
+#include <memory>
 
 class NavigationColliderElement;
 class SteeringAgent;
@@ -29,7 +30,10 @@ public:
 	//Constructor & Destructor
 	App_FlowFieldPathFinding() = default;
 	virtual ~App_FlowFieldPathFinding() final;
-
+	App_FlowFieldPathFinding(const App_FlowFieldPathFinding&) = delete;
+	App_FlowFieldPathFinding& operator=(const App_FlowFieldPathFinding&) = delete;
+	App_FlowFieldPathFinding(const App_FlowFieldPathFinding&&) = delete;
+	App_FlowFieldPathFinding& operator=(const App_FlowFieldPathFinding&&) = delete;
 	//App Functions
 	void Start() override;
 	void Update(float deltaTime) override;
@@ -45,12 +49,21 @@ private:
 	Elite::GraphRenderer m_GraphRenderer{};
 
 	bool m_EditGraphEnabled = false;
-	bool m_RenderAsGraph = false;
+	bool m_RenderAsDirections = false;
 
-	void EditFieldOnMouseClick(Elite::InputMouseButton mouseBtn);
+	void EditFieldOnMouseClick(Elite::InputMouseButton mouseBtn) const;
+	void SpawnRandomAgents();
+
+	int m_Columns{ 20 };
+	int m_Rows{ 20 };
+	int m_CellSize{ 5 };
+	const int m_WorldWidth{ m_Columns * m_CellSize };
+	const int m_WorldHeight{ m_Rows * m_CellSize };
+
+	int m_NrOfAgents{ 200 };
+	std::vector<SteeringAgent*> m_Agents{};
 private:
 	//C++ make the class non-copyable
-	App_FlowFieldPathFinding(const App_FlowFieldPathFinding&) = delete;
-	App_FlowFieldPathFinding& operator=(const App_FlowFieldPathFinding&) = delete;
+
 };
 #endif
