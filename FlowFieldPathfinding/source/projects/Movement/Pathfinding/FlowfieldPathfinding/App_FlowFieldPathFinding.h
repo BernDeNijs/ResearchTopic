@@ -49,10 +49,12 @@ private:
 	Elite::GraphRenderer m_GraphRenderer{};
 
 	bool m_EditGraphEnabled = false;
-	bool m_RenderAsDirections = false;
+	bool m_RenderNodeDirections = false;
+	bool m_RenderNodeNumbers = false;
 
 	void EditFieldOnMouseClick(Elite::InputMouseButton mouseBtn) const;
 	void SpawnRandomAgents();
+	void RenderDirections() const;
 
 	int m_Columns{ 20 };
 	int m_Rows{ 20 };

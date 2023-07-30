@@ -79,6 +79,10 @@ namespace Elite
 		{
 			node->SetInfluence(m_DijkstraGrid[node->GetIndex()]);
 		}
+		/*for (const auto& Wall : m_pWallIdx)
+		{
+			m_Nodes[Wall]->SetColor({1.f,0.f,0.f});
+		}*/
 	}
 	inline void FlowField::CalculateDirectionVectors()
 	{
@@ -231,11 +235,13 @@ namespace Elite
 			{
 				m_pWallIdx.erase(m_pWallIdx.begin() + i);
 				m_pWalls.erase(m_pWalls.begin() + i);
+				m_Nodes[idx]->SetColor(DEFAULT_NODE_COLOR);
 				return;
 			}
 		}
 		m_pWallIdx.push_back(idx);
 		m_pWalls.push_back(std::make_unique<NavigationColliderElement> ( GetNodeWorldPos(idx), static_cast<float>(m_CellSize), static_cast<float>(m_CellSize) ));
+		m_Nodes[idx]->SetColor({ 1.f,0.f,0.f });
 	}
 
 	inline void FlowField::OnGraphModified(bool nrOfNodesChanged, bool nrOfConnectionsChanged)

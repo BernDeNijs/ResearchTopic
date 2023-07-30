@@ -1,4 +1,4 @@
-
+﻿
 //Precompiled Header [ALWAYS ON TOP IN CPP]
 #include "stdafx.h"
 using namespace Elite;
@@ -42,8 +42,8 @@ void App_FlowFieldPathFinding::Update(float deltaTime)
 	if (m_EditGraphEnabled)
 	{
 			m_GridEditor.UpdateGraph(m_pFlowField);
-			if (INPUTMANAGER->IsMouseButtonUp(InputMouseButton::eLeft))
-				EditFieldOnMouseClick(InputMouseButton::eLeft);
+			/*if (INPUTMANAGER->IsMouseButtonUp(InputMouseButton::eLeft))
+				EditFieldOnMouseClick(InputMouseButton::eLeft);*/
 
 			if (INPUTMANAGER->IsMouseButtonUp(InputMouseButton::eRight))
 				EditFieldOnMouseClick(InputMouseButton::eRight);
@@ -98,13 +98,14 @@ void App_FlowFieldPathFinding::UpdateUI()
 	ImGui::Spacing();
 	ImGui::Spacing();
 
-	ImGui::Text("Influence Maps");
+	ImGui::Text("Flowfield: ");
 	ImGui::Spacing();
 	ImGui::Spacing();
 
 	////Get influence map data
 	ImGui::Checkbox("Enable graph editing", &m_EditGraphEnabled);
-	ImGui::Checkbox("Render as directions", &m_RenderAsDirections);
+	ImGui::Checkbox("Render node values", &m_RenderNodeNumbers);
+	ImGui::Checkbox("Render node direction", &m_RenderNodeDirections);
 
 	//auto momentum = m_pInfluenceGrid->GetMomentum();
 	//auto decay = m_pInfluenceGrid->GetDecay();
@@ -131,13 +132,19 @@ void App_FlowFieldPathFinding::UpdateUI()
 
 void App_FlowFieldPathFinding::Render(float deltaTime) const
 {
-	if (m_RenderAsDirections)
-	{
-		m_GraphRenderer.RenderGraph(m_pFlowField, true, false, false, false);
-	}
-	else
+	if (m_RenderNodeNumbers)
 	{
 		m_GraphRenderer.RenderGraph(m_pFlowField, true, true, false, false);
+		
+	}
+	if (m_RenderNodeDirections)
+	{
+		m_GraphRenderer.RenderGraph(m_pFlowField, true, false, false, false);
+		RenderDirections();
+	}
+	if (!m_RenderNodeNumbers && !m_RenderNodeDirections)
+	{
+		m_GraphRenderer.RenderGraph(m_pFlowField, true, false, false, false);
 	}
 	
 
@@ -159,7 +166,8 @@ void App_FlowFieldPathFinding::EditFieldOnMouseClick(Elite::InputMouseButton mou
 	
 	//	m_pInfluenceGraph2D->SetInfluenceAtPosition(mousePos, inf);
 
-}void App_FlowFieldPathFinding::SpawnRandomAgents()
+}
+void App_FlowFieldPathFinding::SpawnRandomAgents()
 {
 	//delete old agents
 	for (auto& agent : m_Agents)
@@ -180,5 +188,24 @@ void App_FlowFieldPathFinding::EditFieldOnMouseClick(Elite::InputMouseButton mou
 		m_Agents[idx]->SetMaxLinearSpeed(10.f);
 		m_Agents[idx]->SetAutoOrient(true);
 		m_Agents[idx]->SetMass(0.f);
+	}
+}
+void App_FlowFieldPathFinding::RenderDirections() const
+{
+	for (auto r = 0; r < m_Rows; ++r)
+	{
+		for (auto c = 0; c < m_Columns; ++c)
+		{
+			int idx = r * m_Columns + c;
+			Vector2 cellPos{ m_pFlowField->GetNodeWorldPos(idx) };
+			int cellSize = m_CellSize;
+
+			//Node
+			//Get direction
+			Vector2 direction = m_pFlowField->GetDirection(idx);
+			
+			DEBUGRENDERER2D->DrawDirection(cellPos, direction, m_CellSize / 2.f, { 1.f,1.f,1.f });
+			DEBUGRENDERER2D->DrawCircle(cellPos + (direction * (m_CellSize / 2.f)), cellSize / 8.f, { 1.f,1.f,1.f },0.9f);	
+		}
 	}
 }
