@@ -51,6 +51,7 @@ private:
 	bool m_EditGraphEnabled = false;
 	bool m_RenderNodeDirections = false;
 	bool m_RenderNodeNumbers = false;
+	bool m_SpawnEnemies = false;
 
 	void EditFieldOnMouseClick(Elite::InputMouseButton mouseBtn) const;
 	void SpawnRandomAgents();

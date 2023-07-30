@@ -6,7 +6,6 @@ using namespace Elite;
 //Includes
 #include "App_FlowFieldPathFinding.h"
 #include "projects/Movement/SteeringBehaviors/SteeringAgent.h"
-#include "projects/Movement/SteeringBehaviors/Steering/SteeringBehaviors.h"
 
 //Destructor
 App_FlowFieldPathFinding::~App_FlowFieldPathFinding()
@@ -33,17 +32,20 @@ void App_FlowFieldPathFinding::Start()
 	m_pFlowField->InitializeBuffer();
 
 	m_GraphRenderer.SetNumberPrintPrecision(0);
-
-	SpawnRandomAgents();
 }
 
 void App_FlowFieldPathFinding::Update(float deltaTime)
 {
+	if (m_SpawnEnemies)
+	{
+		SpawnRandomAgents();
+		m_SpawnEnemies = false;
+	}
+
+
 	if (m_EditGraphEnabled)
 	{
 			m_GridEditor.UpdateGraph(m_pFlowField);
-			/*if (INPUTMANAGER->IsMouseButtonUp(InputMouseButton::eLeft))
-				EditFieldOnMouseClick(InputMouseButton::eLeft);*/
 
 			if (INPUTMANAGER->IsMouseButtonUp(InputMouseButton::eRight))
 				EditFieldOnMouseClick(InputMouseButton::eRight);
@@ -59,7 +61,7 @@ void App_FlowFieldPathFinding::Update(float deltaTime)
 
 	for (const auto& agent : m_Agents)
 	{
-		agent->TrimToWorld({ 0,0 }, { static_cast<float>(m_WorldWidth), static_cast<float>(m_WorldHeight) }, false);
+		agent->TrimToWorld({ 0 +1,0 +1 }, { static_cast<float>(m_WorldWidth) -1, static_cast<float>(m_WorldHeight) -1 }, false);
 		agent->SetLinearVelocity((m_pFlowField->GetDirection(agent->GetPosition())) * agent->GetMaxLinearSpeed());		
 	}
 }
@@ -106,24 +108,12 @@ void App_FlowFieldPathFinding::UpdateUI()
 	ImGui::Checkbox("Enable graph editing", &m_EditGraphEnabled);
 	ImGui::Checkbox("Render node values", &m_RenderNodeNumbers);
 	ImGui::Checkbox("Render node direction", &m_RenderNodeDirections);
-
-	//auto momentum = m_pInfluenceGrid->GetMomentum();
-	//auto decay = m_pInfluenceGrid->GetDecay();
-	//auto propagationInterval = m_pInfluenceGrid->GetPropagationInterval();
-
-	//ImGui::SliderFloat("Momentum", &momentum, 0.0f, 1.f, "%.2");
-	//ImGui::SliderFloat("Decay", &decay, 0.f, 1.f, "%.2");
-	//ImGui::SliderFloat("Propagation Interval", &propagationInterval, 0.f, 2.f, "%.2");
-	//ImGui::Spacing();
-
-	//Set data
-	//m_pInfluenceGrid->SetMomentum(momentum);
-	//m_pInfluenceGrid->SetDecay(decay);
-	//m_pInfluenceGrid->SetPropagationInterval(propagationInterval);
-	//
-	//m_pInfluenceGraph2D->SetMomentum(momentum);
-	//m_pInfluenceGraph2D->SetDecay(decay);
-	//m_pInfluenceGraph2D->SetPropagationInterval(propagationInterval);
+	
+	ImGui::Spacing();
+	ImGui::Spacing();
+	//Enemy spawning
+	ImGui::SliderInt("Number of Agents", &m_NrOfAgents, 0, 1000, "%.0f");
+	m_SpawnEnemies = ImGui::Button("Spawn enemies", ImVec2{});
 
 	//End
 	ImGui::PopAllowKeyboardFocus();
