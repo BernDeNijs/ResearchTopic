@@ -201,25 +201,43 @@ namespace Elite
 		//Find topLeft
 		if (idx - columnStep >= 0 && (idx - rowStep + 1) % columnStep != 0 ) //Check if top not out of bounds && Check if left not out of bounds
 		{
-			neighbors.push_back(idx - columnStep - rowStep);
+			//Skip if top & left are walls
+			if (!(m_DijkstraGrid[idx - columnStep] == -1 && m_DijkstraGrid[idx - rowStep] == -1))
+			{
+				neighbors.push_back(idx - columnStep - rowStep);
+			}			
 		}
 
 		//Find topRight
 		if (idx - columnStep >= 0 && (idx + rowStep) % columnStep != 0) //Check if top not out of bounds && Check if right not out of bounds
 		{
-			neighbors.push_back(idx - columnStep + rowStep);
+			//Skip if top & right are walls
+			if (!(m_DijkstraGrid[idx - columnStep] == -1 && m_DijkstraGrid[idx + rowStep] == -1))
+			{
+				neighbors.push_back(idx - columnStep + rowStep);
+			}
+			
 		}
 
 		//Find bottomLeft
 		if (idx + columnStep < m_Nodes.size() && (idx - rowStep + 1) % columnStep != 0) //Check if bottom not out of bounds && Check if left not out of bounds
 		{
-			neighbors.push_back(idx + columnStep - rowStep);
+			//Skip if bottom & left are walls
+			if (!(m_DijkstraGrid[idx + columnStep] == -1 && m_DijkstraGrid[idx - rowStep] == -1))
+			{
+				neighbors.push_back(idx + columnStep - rowStep);
+			}
+			
 		}
 
 		//Find bottomRight
 		if (idx + columnStep < m_Nodes.size() && (idx + rowStep) % columnStep != 0) //Check if bottom not out of bounds && Check if left not out of bounds
 		{
-			neighbors.push_back(idx + columnStep + rowStep);
+			//Skip if bottom & right are walls
+			if (!(m_DijkstraGrid[idx + columnStep] == -1 && m_DijkstraGrid[idx + rowStep] == -1))
+			{
+				neighbors.push_back(idx + columnStep + rowStep);
+			}	
 		}
 
 		return neighbors;
