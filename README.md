@@ -1,47 +1,47 @@
 # FlowField Pathfinding
  Research into flowfield pathfinding by Bern De Nijs.\
  Made for the course Digital Arts and Entertainment.\
- Made using the Elite Engine.\
+ Made using the Elite Engine.
 
 ![Untitled](https://github.com/BernDeNijs/ResearchTopic/assets/114000661/fa625a1e-41f7-4b4e-b8cd-356a537458d1)
 
 
 ## Introduction
 Pathfinding is a fundamental problem in computer science and artificial intelligence, commonly encountered in various applications, including robotics, video games, and navigation systems. \
-The goal of pathfinding is to find the shortest or most efficient path between two points in a given environment, considering obstacles, terrain costs, and other constraints.\
+The goal of pathfinding is to find the shortest or most efficient path between two points in a given environment, considering obstacles, terrain costs, and other constraints.
 
 Traditional pathfinding algorithms, like Dijkstra's algorithm and A* (A-star), are widely used and effective for finding optimal paths. \
 These are a good and cost effective way when you're dealing with small amounts of agents but when dealing with groups of hundreds or thousands calculating each path individually becomes very expensive.\
 So what do we do when we want large numbers of agents anyway?\
-One solution would be Flowfield pathfinding.\
+One solution would be Flowfield pathfinding.
 
 ### What is flowfield pathfinding?
 
 Flowfield pathfinding is a technique used in artificial intelligence and game development for efficient pathfinding of agents in a dynamic environment.\
 Instead of calculating a path for every agent we divide the field into a grid. \
 For each cell of this grid we calculate a vector in the direction of the most efficient way to get to the destination, while avoiding static obstacles.\
-By passing this information to the agents they can quickly navigate the game's world, avoiding obstacles, while minimizing the amount of computation required.\
+By passing this information to the agents they can quickly navigate the game's world, avoiding obstacles, while minimizing the amount of computation required.
 
 ### Why use flowfield pathfinding?
 
 Flowfield pathfinding offers several advantages over traditional pathfinding algorithms. It significantly reduces the computational cost of pathfinding for large crowds of agents, making it well-suited for real-time applications.\ 
 Additionally, flowfield pathfinding enables agents to adapt to changing environments and dynamic obstacles efficiently.\
-It provides smooth and natural-looking movement, enhancing the overall immersion and realism of the game.\
+It provides smooth and natural-looking movement, enhancing the overall immersion and realism of the game.
 
 ## Implementation
 ### Create a grid
-We start by dividing the world into tiles.\
+We start by dividing the world into tiles.
 ![GPP_CreateAGrid](https://github.com/BernDeNijs/ResearchTopic/assets/114000661/ffa60716-a613-4d87-8f28-b813acc918c5)
 
 
 ### Fill it with obstacles (optional)
-If we wish we can add some walls to our field. These will be impassable.\
+If we wish we can add some walls to our field. These will be impassable.
 ![GPP_AddObstacles](https://github.com/BernDeNijs/ResearchTopic/assets/114000661/31168a2f-4662-431b-b848-35039eaf5389)
 
 
 ### Dijkstra floodfill
 Next we need to determine the cost of every tile to the center. For this we use a Dijkstra alghoritm. \
-This alghoritm fills our grid with values while taking into account the obstales we placed previously.\
+This alghoritm fills our grid with values while taking into account the obstales we placed previously.
 
 Steps:
 1. Set the value of each tile to an impossible value like -1.
