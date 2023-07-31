@@ -24,7 +24,7 @@ By passing this information to the agents they can quickly navigate the game's w
 
 ### Why use flowfield pathfinding?
 
-Flowfield pathfinding offers several advantages over traditional pathfinding algorithms. It significantly reduces the computational cost of pathfinding for large crowds of agents, making it well-suited for real-time applications.\ 
+Flowfield pathfinding offers several advantages over traditional pathfinding algorithms. It significantly reduces the computational cost of pathfinding for large crowds of agents, making it well-suited for real-time applications. 
 Additionally, flowfield pathfinding enables agents to adapt to changing environments and dynamic obstacles efficiently.\
 It provides smooth and natural-looking movement, enhancing the overall immersion and realism of the game.
 
