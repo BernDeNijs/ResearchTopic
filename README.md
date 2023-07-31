@@ -3,7 +3,8 @@
  Made for the course Digital Arts and Entertainment.
  Made using the Elite Engine.
 
-https://github.com/BernDeNijs/ResearchTopic/assets/114000661/7f198711-7322-44cf-bf0a-aabffe4deddf
+![Untitled](https://github.com/BernDeNijs/ResearchTopic/assets/114000661/fa625a1e-41f7-4b4e-b8cd-356a537458d1)
+
 
 ## Introduction
 Pathfinding is a fundamental problem in computer science and artificial intelligence, commonly encountered in various applications, including robotics, video games, and navigation systems. 
